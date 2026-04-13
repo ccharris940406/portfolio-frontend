@@ -1,0 +1,50 @@
+---
+import { fetchSanityData } from "../lib/sanity";
+
+interface ContactType {
+    _id: string;
+    source: string;
+    url: string;
+    icon: string;
+}
+
+const query = `*[_type == "contact"]{
+  _id,
+  source,
+  url,
+  icon,
+}`;
+const contactsRawData = await fetchSanityData(query);
+const contacts: ContactType[] = contactsRawData.result;
+const { cvLink } = Astro.props as { cvLink: string };
+---
+
+<section
+    id="contact"
+    class="flex flex-col justify-center items-center space-y-4 mt-2"
+>
+    <ul
+        class="flex gap-4 text-5xl sm:text-3xl md:text-5xl justify-center items-center sm:gap-4 text-[var(--color-primary)]"
+    >
+        {
+            contacts.map((contact) => (
+                <li
+                    id={contact._id}
+                    class="hover:text-[var(--color-secondary)]"
+                >
+                    <a href={contact.url} target="_blank">
+                        <i class={contact.icon} />
+                    </a>
+                </li>
+            ))
+        }
+    </ul>
+    <a
+        href={cvLink}
+        target="_blank"
+        class="inline-flex hover:bg-[var(--color-secondary)] items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2 rounded transition"
+    >
+        <i class="fa-solid fa-file-arrow-down"></i>
+        Here my CV
+    </a>
+</section>

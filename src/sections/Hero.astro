@@ -1,0 +1,134 @@
+---
+import ThemeToggle from "../components/ThemeToggle.astro";
+import { fetchSanityData } from "../lib/sanity";
+import { toHTML } from "@portabletext/to-html";
+import Contact from "../components/Contact.astro";
+import type { ProfileInfo, SkillMorphInfo } from "../types/schemes.type";
+import Morphify from "../components/Morphify";
+
+const query = `*[_type == "profile"][0]{
+  _id,
+  name,
+  title,
+  about,
+  "avatarLight": profileImageLightMode.asset->url,
+  "avatarDark": profileImageDarkMode.asset->url,
+  "CV": cvLink,
+}`;
+const profileRawData = await fetchSanityData(query);
+
+const { avatarDark, avatarLight, title, about, CV } =
+    profileRawData.result as ProfileInfo;
+const titleHtml = toHTML(title);
+
+const skillsQuery = `
+  *[_type == "skill"]{
+    color,
+    svgPath
+}
+`;
+
+const skillsRawData = await fetchSanityData(skillsQuery);
+const skillsSvgPath = skillsRawData.result as SkillMorphInfo[];
+---
+
+<section class="min-h-screen flex items-center">
+    <div
+        class="grid grid-cols-1 sm:grid-cols-3 sm:auto-rows-auto gap-4 py-8 mx-4 w-full"
+    >
+        <div
+            class="box col-span-1 sm:col-span-2 sm:row-span-2 flex flex-col text-center justify-center items-center h-auto"
+        >
+            <div class="flex flex-col sm:flex-row gap-4 items-center">
+                <img
+                    id="profile-image"
+                    src={avatarDark}
+                    alt="Profile's image"
+                    class="h-40 md:h-50 rounded-full"
+                    data-avatar-light={avatarLight}
+                    data-avatar-dark={avatarDark}
+                />
+                <img id="logo" src="/logo.svg" alt="" class="w-30 sm:w-40" />
+            </div>
+            <div
+                class="text-lg sm:text-2xl md:text-4xl mt-4 leading-snug"
+                set:html={titleHtml}
+            />
+        </div>
+
+        <div
+            class="box col-span-1 sm:col-span-2 flex flex-col gap-4 bg-white rounded-2xl shadow-md p-6 h-auto"
+        >
+            <h2 class="box-header">About me</h2>
+
+            <div class="text-base sm:text-lg leading-relaxed space-y-4">
+                <p set:html={about} />
+            </div>
+        </div>
+
+        <div
+            class="box col-start-1 sm:col-start-3 sm:row-start-1 flex justify-center items-center h-auto"
+        >
+            <ThemeToggle size="lg" />
+        </div>
+
+        <div
+            class="box flex flex-col col-start-1 sm:col-start-3 sm:row-start-2 h-auto"
+        >
+            <h2 class="box-header">Where to Find Me</h2>
+            <Contact cvLink={CV} />
+        </div>
+        <div class="box col-start-1 sm:col-start-3 sm:row-start-3 h-auto">
+            <div class="box-header">Skills</div>
+            <div class="felx justify-center items-center w-full h-[25vh]">
+                <Morphify skills={skillsSvgPath} client:load />
+            </div>
+            <div class="flex justify-center items-center">
+                <a
+                    href="#skills-section"
+                    class="text-(--color-secondary) hover:underline"
+                >
+                    See details
+                </a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    const logo = document.getElementById("logo") as HTMLImageElement | null;
+    const profileImage = document.getElementById(
+        "profile-image",
+    ) as HTMLImageElement | null;
+
+    const updateLogo = () => {
+        if (!logo) return;
+
+        const isDark = document.documentElement.classList.contains("dark");
+        logo.src = !isDark ? "/logo.svg" : "/logoLight.svg";
+
+        if (profileImage) {
+            profileImage.src = isDark
+                ? profileImage.dataset.avatarDark || ""
+                : profileImage.dataset.avatarLight || "";
+        }
+    };
+
+    updateLogo();
+
+    const observer = new MutationObserver((mutations) => {
+        mutations.forEach((mutation) => {
+            if (
+                mutation.type === "attributes" &&
+                mutation.attributeName === "class"
+            ) {
+                updateLogo();
+            }
+        });
+    });
+
+    observer.observe(document.documentElement, {
+        attributes: true,
+        attributeFilter: ["class"],
+    });
+</script>

@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+:root {
+    --color-primary: #1a237e;
+    --color-secondary: #5c6bc0;
+    --color-background: #ffffff;
+    --color-text: #2c3e50;
+    --color-muted: #90a4ae;
+    --color-border: #e0e0e0;
+    --color-cards: #eceff1;
+    --color-accent: #ffb74d;
+}
+
+.dark {
+    --color-primary: #5c6bc0;
+    --color-secondary: #ffb74d;
+    --color-background: #121a2f;
+    --color-text: #eceff1;
+    --color-muted: #90a4ae;
+    --color-border: #1f2b3d;
+    --color-cards: #1c273b;
+    --color-accent: #ffca6a;
+}
+
+/* Base styles */
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    @apply bg-[var(--color-background)] text-[var(--color-text)];
+}
+
+main {
+    @apply flex flex-col items-center gap-y-15 sm:p-10 md:p-5 lg:p-15;
+}
+
+.border-custom {
+    border-color: var(--color-border);
+}
+
+.text-muted {
+    color: var(--color-muted);
+}
+
+/* Smooth transitions for theme changes */
+html,
+body,
+.box {
+    transition:
+        background-color 0.3s ease,
+        color 0.3s ease,
+        border-color 0.3s ease;
+}
+
+.box {
+    @apply rounded-2xl shadow-md p-3;
+    background-color: var(--color-cards);
+}
+
+.box-header {
+    @apply text-2xl md:text-4xl font-bold text-(--color-secondary) border-b border-(--color-secondary) pb-2 mb-5;
+}
+
+.section-header {
+    @apply text-2xl md:text-4xl font-bold
+        text-[var(--color-secondary)]
+        border-b border-[var(--color-secondary)]
+        pb-2 mb-10 mt-10 mx-4 md:mx-8;
+}
+.section-content {
+    @apply text-base md:text-lg font-normal text-(--color-text) border-b border-(--color-border) pb-2 mb-5 mt-100 md:mx-8;
+}

@@ -1,0 +1,120 @@
+---
+type Size = "sm" | "md" | "lg";
+
+const { size = "md" } = Astro.props as { size?: Size };
+
+interface VariantType {
+    wrapperSize: string;
+    circleSize: string;
+    iconSize: string;
+    circleTranslate: string;
+}
+
+const variants: Record<Size, VariantType> = {
+    sm: {
+        wrapperSize: "w-16 h-8 px-1",
+        circleSize: "w-6 h-6 top-1 left-1",
+        iconSize: "w-4 h-4",
+        circleTranslate: "translate-x-8",
+    },
+    md: {
+        wrapperSize: "w-24 h-12 px-2",
+        circleSize: "w-8 h-8 top-2 left-2",
+        iconSize: "w-6 h-6",
+        circleTranslate: "translate-x-12",
+    },
+    lg: {
+        wrapperSize: "w-32 h-16 px-3",
+        circleSize: "w-10 h-10 top-3 left-3",
+        iconSize: "w-8 h-8",
+        circleTranslate: "translate-x-16",
+    },
+};
+
+const styles = variants[size];
+---
+
+<button
+    id={`theme-toggle`}
+    aria-label="Toggle theme"
+    class={`relative ${styles.wrapperSize} flex items-center justify-between rounded-full border-1 text-white transition-colors duration-300`}
+>
+    <span class="text-blue-300">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class={styles.iconSize}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"></path>
+        </svg>
+    </span>
+
+    <span class="text-yellow-300">
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            class={styles.iconSize}
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+        >
+            <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 3v2m6.364.636l-1.414 1.414M21 12h-2M18.364 18.364l-1.414-1.414M12 19v2M5.636 18.364l1.414-1.414M3 12h2M5.636 5.636l1.414 1.414M12 8a4 4 0 100 8 4 4 0 000-8z"
+            ></path>
+        </svg>
+    </span>
+
+    <span
+        id="switch-circle"
+        class={`absolute ${styles.circleSize} rounded-full bg-white transition-all duration-300 transform`}
+        data-circle-translate={styles.circleTranslate}></span>
+</button>
+
+<script>
+    const toggleButton = document.getElementById("theme-toggle");
+    const switchCircle = document.getElementById("switch-circle");
+
+    const applyTheme = (theme: string) => {
+        const html = document.documentElement;
+        html.classList.toggle("dark", theme === "dark");
+
+        if (!switchCircle) return;
+        const circleTranslate = switchCircle.getAttribute(
+            "data-circle-translate",
+        );
+        if (!circleTranslate) return;
+        if (theme === "dark") {
+            switchCircle.classList.add(circleTranslate);
+        } else {
+            switchCircle.classList.remove(circleTranslate);
+        }
+    };
+
+    const toggleTheme = () => {
+        const currentTheme = document.documentElement.classList.contains("dark")
+            ? "dark"
+            : "light";
+        const newTheme = currentTheme === "dark" ? "light" : "dark";
+        localStorage.setItem("theme", newTheme);
+        applyTheme(newTheme);
+    };
+
+    if (toggleButton) {
+        toggleButton.addEventListener("click", toggleTheme);
+    }
+
+    const savedTheme = localStorage.getItem("theme");
+    const prefersDark = window.matchMedia(
+        "(prefers-color-scheme: dark)",
+    ).matches;
+    const initialTheme = savedTheme || (prefersDark ? "dark" : "light");
+    applyTheme(initialTheme);
+</script>

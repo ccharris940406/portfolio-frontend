@@ -1,0 +1,58 @@
+---
+import Project from "../components/Project.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { fetchSanityData } from "../lib/sanity";
+import type { ProjectType } from "../types/schemes.type";
+
+const query = `
+  *[_type == "project"]{
+    _id,
+      title,
+      description,
+      repository,
+      imageOrientation,
+      "imageURL" :image.asset->url,
+      skills[]->{
+        name
+      }
+  }
+  `;
+const projectsRawData = await fetchSanityData(query);
+const projects = projectsRawData.result as ProjectType[];
+---
+
+<style>
+    .projects-section {
+        @apply w-full;
+    }
+</style>
+
+<section id="projects-section" class="projects-section">
+    <h1 class="section-header">Projects</h1>
+    <div
+        class="grid grid-cols-1 sm:grid-cols-9 sm:auto-rows-auto gap-4 mt-8 mx-4 self-center"
+    >
+        {
+            projects.map((project) => {
+                return (
+                    <ProjectCard
+                        title={project.title}
+                        orientation={project.imageOrientation}
+                        imageUrl={project.imageURL}
+                    />
+                );
+            })
+        }
+    </div>
+</section>
+<!-- <div
+    class={`${orientationClass} w-100 flex justify-center`}
+>
+    <Project
+        title={project.title}
+        description={project.description}
+        repository={project.repository}
+        imageURL={project.imageURL}
+        techs={project.skills.map((skill) => skill.name)}
+    />
+</div> -->

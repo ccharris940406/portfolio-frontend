@@ -1,0 +1,36 @@
+---
+interface ProjectCardProps {
+    title: string;
+    description: string;
+    imageUrl: string;
+    techs: string[];
+    repository: string;
+    orientation: "landscape" | "portrait" | "square";
+}
+
+const { title, description, imageUrl, techs, repository, orientation } =
+    Astro.props as ProjectCardProps;
+
+let orientationClass = "";
+let heightClass = "";
+switch (orientation) {
+    case "landscape":
+        orientationClass = "col-span-1 md:col-span-3";
+        heightClass = "h-50";
+        break;
+    case "portrait":
+        orientationClass = "row-span-1 md:row-span-2 col-span-1 md:col-span-2";
+        heightClass = "h-75 md:h-auto";
+        break;
+    case "square":
+        orientationClass = "col-span-1";
+        break;
+    default:
+        orientationClass = "col-span-3";
+}
+---
+
+<article class={`project-card ${orientationClass} box`}>
+    <img src={imageUrl} alt={title} class={`${heightClass} object-cover`} />
+    <h3 class="">{title}</h3>
+</article>
