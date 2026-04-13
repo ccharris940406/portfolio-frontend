@@ -24,14 +24,11 @@ const { cvLink } = Astro.props as { cvLink: string };
     class="flex flex-col justify-center items-center space-y-4 mt-2"
 >
     <ul
-        class="flex gap-4 text-5xl sm:text-3xl md:text-5xl justify-center items-center sm:gap-4 text-[var(--color-primary)]"
+        class="flex gap-4 text-5xl sm:text-3xl md:text-5xl justify-center items-center sm:gap-4 text-(--color-primary)"
     >
         {
             contacts.map((contact) => (
-                <li
-                    id={contact._id}
-                    class="hover:text-[var(--color-secondary)]"
-                >
+                <li id={contact._id} class="hover:text-(--color-secondary)">
                     <a href={contact.url} target="_blank">
                         <i class={contact.icon} />
                     </a>
@@ -42,7 +39,7 @@ const { cvLink } = Astro.props as { cvLink: string };
     <a
         href={cvLink}
         target="_blank"
-        class="inline-flex hover:bg-[var(--color-secondary)] items-center gap-2 bg-[var(--color-primary)] text-white px-4 py-2 rounded transition"
+        class="inline-flex hover:bg-(--color-secondary) items-center gap-2 bg-(--color-primary) text-white px-4 py-2 rounded transition"
     >
         <i class="fa-solid fa-file-arrow-down"></i>
         Here my CV
