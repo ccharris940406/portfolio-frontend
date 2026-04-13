@@ -1,3 +1,31 @@
-<section id="skills-section" class="skills-section">
+---
+import SkillCard from "../components/SkillCard.astro";
+import { fetchSanityData } from "../lib/sanity";
+
+interface SkillInfo {
+    name: string;
+    color: string;
+    svgPath: string;
+}
+
+const query = `*[_type == "skill"]{ name, color, svgPath }`;
+const rawData = await fetchSanityData(query);
+const skills = rawData.result as SkillInfo[];
+---
+
+<section id="skills-section" class="w-full">
     <h1 class="section-header">Skills</h1>
+    <div
+        class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3 mx-4 md:mx-8"
+    >
+        {
+            skills.map((skill) => (
+                <SkillCard
+                    name={skill.name}
+                    color={skill.color}
+                    svgPath={skill.svgPath}
+                />
+            ))
+        }
+    </div>
 </section>

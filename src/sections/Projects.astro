@@ -1,5 +1,4 @@
 ---
-import Project from "../components/Project.astro";
 import ProjectCard from "../components/ProjectCard.astro";
 import { fetchSanityData } from "../lib/sanity";
 import type { ProjectType } from "../types/schemes.type";
@@ -21,38 +20,229 @@ const projectsRawData = await fetchSanityData(query);
 const projects = projectsRawData.result as ProjectType[];
 ---
 
-<style>
-    .projects-section {
-        @apply w-full;
-    }
-</style>
-
-<section id="projects-section" class="projects-section">
+<section id="projects-section" class="w-full">
     <h1 class="section-header">Projects</h1>
     <div
-        class="grid grid-cols-1 sm:grid-cols-9 sm:auto-rows-auto gap-4 mt-8 mx-4 self-center"
+        class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 mx-4 md:mx-8"
     >
         {
-            projects.map((project) => {
-                return (
-                    <ProjectCard
-                        title={project.title}
-                        orientation={project.imageOrientation}
-                        imageUrl={project.imageURL}
-                    />
-                );
-            })
+            projects.map((project) => (
+                <ProjectCard
+                    title={project.title}
+                    description={project.description}
+                    repository={project.repository}
+                    orientation={project.imageOrientation}
+                    imageUrl={project.imageURL}
+                    techs={project.skills.map((skill) => skill.name)}
+                />
+            ))
         }
     </div>
 </section>
-<!-- <div
-    class={`${orientationClass} w-100 flex justify-center`}
+
+<!-- Modal -->
+<dialog
+    id="project-modal"
+    class="w-full max-w-lg rounded-2xl p-0 overflow-hidden shadow-2xl backdrop:bg-black/60 backdrop:backdrop-blur-sm"
+    style="background-color: var(--color-cards); color: var(--color-text);"
 >
-    <Project
-        title={project.title}
-        description={project.description}
-        repository={project.repository}
-        imageURL={project.imageURL}
-        techs={project.skills.map((skill) => skill.name)}
-    />
-</div> -->
+    <div class="flex flex-col">
+        <!-- Image -->
+        <div class="relative">
+            <img
+                id="modal-image"
+                src=""
+                alt=""
+                class="w-full aspect-video object-contain bg-black"
+            />
+            <!-- Close button -->
+            <button
+                id="modal-close"
+                class="absolute top-3 right-3 rounded-full w-8 h-8 flex items-center justify-center text-white cursor-pointer transition-opacity hover:opacity-80"
+                style="background-color: rgba(0,0,0,0.5);"
+                aria-label="Close"
+            >
+                <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="16"
+                    height="16"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                >
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Content -->
+        <div class="p-6 flex flex-col gap-4">
+            <h2
+                id="modal-title"
+                class="text-2xl font-bold leading-tight"
+                style="color: var(--color-secondary);"
+            >
+            </h2>
+
+            <p
+                id="modal-description"
+                class="text-sm leading-relaxed"
+                style="color: var(--color-text); opacity: 0.85;"
+            >
+            </p>
+
+            <!-- Tech badges -->
+            <div id="modal-techs" class="flex flex-wrap gap-2"></div>
+
+            <!-- Repo link -->
+            <div
+                id="modal-repo-wrapper"
+                class="pt-2 border-t"
+                style="border-color: var(--color-border);"
+            >
+                <a
+                    id="modal-repo"
+                    href=""
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center gap-2 text-sm font-semibold hover:underline"
+                    style="color: var(--color-accent);"
+                >
+                    View Repository
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        width="14"
+                        height="14"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        stroke-width="2"
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        aria-hidden="true"
+                    >
+                        <path
+                            d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"
+                        ></path>
+                        <polyline points="15 3 21 3 21 9"></polyline>
+                        <line x1="10" y1="14" x2="21" y2="3"></line>
+                    </svg>
+                </a>
+            </div>
+        </div>
+    </div>
+</dialog>
+
+<script>
+    const modal = document.getElementById(
+        "project-modal",
+    ) as HTMLDialogElement | null;
+    const modalImage = document.getElementById(
+        "modal-image",
+    ) as HTMLImageElement | null;
+    const modalTitle = document.getElementById("modal-title");
+    const modalDescription = document.getElementById("modal-description");
+    const modalTechs = document.getElementById("modal-techs");
+    const modalRepo = document.getElementById(
+        "modal-repo",
+    ) as HTMLAnchorElement | null;
+    const modalRepoWrapper = document.getElementById("modal-repo-wrapper");
+    const modalClose = document.getElementById("modal-close");
+
+    function openModal(card: HTMLElement) {
+        if (!modal) return;
+
+        const title = card.dataset.title ?? "";
+        const description = card.dataset.description ?? "";
+        const image = card.dataset.image ?? "";
+        const repository = card.dataset.repository ?? "";
+        let techs: string[] = [];
+        try {
+            techs = JSON.parse(card.dataset.techs ?? "[]");
+        } catch {
+            techs = [];
+        }
+
+        if (modalImage) {
+            modalImage.src = image;
+            modalImage.alt = title;
+        }
+        if (modalTitle) modalTitle.textContent = title;
+        if (modalDescription) modalDescription.textContent = description;
+
+        if (modalTechs) {
+            modalTechs.innerHTML = techs
+                .map(
+                    (tech) =>
+                        `<span class="rounded-full px-2 py-0.5 text-xs border" style="border-color:var(--color-secondary);color:var(--color-secondary);">${tech}</span>`,
+                )
+                .join("");
+        }
+
+        if (modalRepo && modalRepoWrapper) {
+            if (repository) {
+                modalRepo.href = repository;
+                modalRepoWrapper.style.display = "";
+            } else {
+                modalRepoWrapper.style.display = "none";
+            }
+        }
+
+        modal.showModal();
+    }
+
+    // Open on card click or Enter/Space key
+    document.querySelectorAll<HTMLElement>(".project-card").forEach((card) => {
+        card.addEventListener("click", () => openModal(card));
+        card.addEventListener("keydown", (e) => {
+            if (e.key === "Enter" || e.key === " ") {
+                e.preventDefault();
+                openModal(card);
+            }
+        });
+    });
+
+    // Close on button click
+    modalClose?.addEventListener("click", () => modal?.close());
+
+    // Close on backdrop click
+    modal?.addEventListener("click", (e) => {
+        const rect = modal.getBoundingClientRect();
+        const clickedOutside =
+            e.clientX < rect.left ||
+            e.clientX > rect.right ||
+            e.clientY < rect.top ||
+            e.clientY > rect.bottom;
+        if (clickedOutside) modal.close();
+    });
+</script>
+
+<style>
+    dialog {
+        border: none;
+        outline: none;
+        position: fixed;
+        inset: 0;
+        margin: auto;
+        max-height: 90vh;
+        overflow-y: auto;
+        width: calc(100% - 2rem);
+    }
+    dialog[open] {
+        animation: modal-in 0.2s ease;
+    }
+    @keyframes modal-in {
+        from {
+            opacity: 0;
+            transform: scale(0.95) translateY(8px);
+        }
+        to {
+            opacity: 1;
+            transform: scale(1) translateY(0);
+        }
+    }
+</style>

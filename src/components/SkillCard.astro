@@ -1,0 +1,38 @@
+---
+interface SkillCardProps {
+    name: string;
+    color: string;
+    svgPath: string;
+}
+
+const { name, color, svgPath } = Astro.props as SkillCardProps;
+---
+
+<div
+    class="skill-card flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-300 hover:scale-110 cursor-default"
+    style={`background-color: var(--color-cards); border: 1px solid ${color}33; --skill-color: ${color};`}
+>
+    <div
+        class="w-10 h-10 rounded-lg flex items-center justify-center"
+        style={`background-color: ${color}22;`}
+    >
+        <svg
+            viewBox="0 0 25 25"
+            width="28"
+            height="28"
+            xmlns="http://www.w3.org/2000/svg"
+            aria-hidden="true"
+        >
+            <path d={svgPath} fill={color} />
+        </svg>
+    </div>
+    <span class="text-xs font-medium text-center leading-tight" style="color: var(--color-text);">
+        {name}
+    </span>
+</div>
+
+<style>
+    .skill-card:hover {
+        box-shadow: 0 4px 20px color-mix(in srgb, var(--skill-color) 40%, transparent);
+    }
+</style>

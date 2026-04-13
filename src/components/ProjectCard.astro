@@ -8,29 +8,39 @@ interface ProjectCardProps {
     orientation: "landscape" | "portrait" | "square";
 }
 
-const { title, description, imageUrl, techs, repository, orientation } =
+const { title, description, imageUrl, techs, repository } =
     Astro.props as ProjectCardProps;
-
-let orientationClass = "";
-let heightClass = "";
-switch (orientation) {
-    case "landscape":
-        orientationClass = "col-span-1 md:col-span-3";
-        heightClass = "h-50";
-        break;
-    case "portrait":
-        orientationClass = "row-span-1 md:row-span-2 col-span-1 md:col-span-2";
-        heightClass = "h-75 md:h-auto";
-        break;
-    case "square":
-        orientationClass = "col-span-1";
-        break;
-    default:
-        orientationClass = "col-span-3";
-}
 ---
 
-<article class={`project-card ${orientationClass} box`}>
-    <img src={imageUrl} alt={title} class={`${heightClass} object-cover`} />
-    <h3 class="">{title}</h3>
+<article
+    class="project-card rounded-xl overflow-hidden cursor-pointer transition-all duration-300 hover:scale-[1.03] hover:shadow-xl flex flex-col"
+    style="background-color: var(--color-cards);"
+    data-title={title}
+    data-description={description}
+    data-techs={JSON.stringify(techs)}
+    data-repository={repository}
+    data-image={imageUrl}
+    role="button"
+    tabindex="0"
+>
+    <div class="relative overflow-hidden">
+        <img
+            src={imageUrl}
+            alt={title}
+            class="w-full h-36 object-cover transition-transform duration-300 group-hover:scale-105"
+        />
+        <div
+            class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 hover:opacity-100 transition-opacity duration-300 flex items-end p-3"
+        >
+            <span class="text-white text-xs font-medium">Ver detalles →</span>
+        </div>
+    </div>
+    <div class="p-3">
+        <h3
+            class="font-semibold text-sm leading-tight line-clamp-2"
+            style="color: var(--color-secondary);"
+        >
+            {title}
+        </h3>
+    </div>
 </article>
