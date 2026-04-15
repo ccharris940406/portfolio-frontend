@@ -1,14 +1,20 @@
 ---
 import NavBar from "../components/NavBar.astro";
 import "../styles/global.css";
+import SEO from "../components/SEO.astro";
 ---
 
 <html lang="en">
     <head>
+        <SEO
+            title="Carlos C. Harris Castillo"
+            description="Desarrollador Full Stack especializado en Odoo, React Native y Docker"
+            image="banner.png"
+        />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.png" />
+        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
         <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
@@ -17,7 +23,7 @@ import "../styles/global.css";
             referrerpolicy="no-referrer"
         />
         <meta name="generator" content={Astro.generator} />
-        <title>Astro Basics</title>
+        <title>Carlos César Harris Castillo</title>
     </head>
     <body>
         <header>

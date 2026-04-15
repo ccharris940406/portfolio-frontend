@@ -1,0 +1,59 @@
+---
+interface SEOProps {
+    title: string;
+    description: string;
+    author?: string;
+    image?: string;
+    url?: string;
+    type?: "website" | "article";
+    jsonLd?: Record<string, unknown>;
+}
+
+const {
+    title,
+    description,
+    author = "",
+    image = "",
+    url = "",
+    type = "website",
+    jsonLd,
+} = Astro.props as SEOProps;
+
+const canonicalUrl = url || Astro.site?.toString() || "";
+const ogImage = image || "";
+---
+
+<!-- Primary Meta Tags -->
+<title>{title}</title>
+<meta name="title" content={title} />
+<meta name="description" content={description} />
+{author && <meta name="author" content={author} />}
+{canonicalUrl && <link rel="canonical" href={canonicalUrl} />}
+<meta name="robots" content="index, follow" />
+<meta name="theme-color" content="#1a237e" />
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content={type} />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+{canonicalUrl && <meta property="og:url" content={canonicalUrl} />}
+{ogImage && <meta property="og:image" content={ogImage} />}
+{ogImage && <meta property="og:image:alt" content={title} />}
+
+<!-- Twitter Card -->
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+{canonicalUrl && <meta name="twitter:url" content={canonicalUrl} />}
+{ogImage && <meta name="twitter:image" content={ogImage} />}
+{ogImage && <meta name="twitter:image:alt" content={title} />}
+
+<!-- JSON-LD Structured Data -->
+{
+    jsonLd && (
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify(jsonLd, null, 2)}
+        />
+    )
+}

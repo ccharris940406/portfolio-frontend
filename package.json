@@ -13,7 +13,9 @@
   },
   "dependencies": {
     "@astrojs/react": "^5.0.3",
+    "@astrojs/sitemap": "^3.7.2",
     "@portabletext/to-html": "^5.0.2",
+    "@portabletext/types": "^4.0.2",
     "@sanity/client": "^7.21.0",
     "@tailwindcss/vite": "^4.2.2",
     "astro": "^6.1.6",
