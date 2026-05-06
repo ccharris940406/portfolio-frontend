@@ -5,12 +5,22 @@ import "../styles/global.css";
 import SEO from "../components/SEO.astro";
 ---
 
-<html lang="en">
+<html lang="es">
     <head>
         <SEO
-            title="Carlos C. Harris Castillo"
-            description="Desarrollador Full Stack especializado en Odoo, React Native y Docker"
-            image="banner.png"
+            title="Carlos César Harris Castillo — Full Stack Developer"
+            description="Desarrollador Full Stack especializado en Odoo, React Native y Docker. Experiencia en desarrollo web, mobile y ERP."
+            author="Carlos César Harris Castillo"
+            image="https://ccharris.vercel.app/banner.png"
+            url="https://ccharris.vercel.app"
+            jsonLd={{
+                "@context": "https://schema.org",
+                "@type": "Person",
+                "name": "Carlos César Harris Castillo",
+                "jobTitle": "Full Stack Developer",
+                "description": "Desarrollador Full Stack especializado en Odoo, React Native y Docker",
+                "url": "https://ccharris.vercel.app",
+            }}
         />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
@@ -24,7 +34,6 @@ import SEO from "../components/SEO.astro";
             referrerpolicy="no-referrer"
         />
         <meta name="generator" content={Astro.generator} />
-        <title>Carlos César Harris Castillo</title>
     </head>
     <body>
         <header>

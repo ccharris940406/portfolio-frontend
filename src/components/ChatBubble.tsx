@@ -9,11 +9,21 @@ interface Message {
 
 export default function ChatBubble() {
   const [isOpen, setIsOpen] = useState(false);
+  const [showTooltip, setShowTooltip] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const sessionId = useRef(crypto.randomUUID());
+
+  useEffect(() => {
+    const show = setTimeout(() => setShowTooltip(true), 3000);
+    const hide = setTimeout(() => setShowTooltip(false), 9000);
+    return () => {
+      clearTimeout(show);
+      clearTimeout(hide);
+    };
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -54,16 +64,44 @@ export default function ChatBubble() {
 
   return (
     <>
-      <button
-        onClick={() => setIsOpen((prev) => !prev)}
-        aria-label={isOpen ? "Cerrar chat" : "Abrir chat"}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-200 hover:scale-110 cursor-pointer"
-        style={{ backgroundColor: "var(--color-primary)" }}
-      >
-        <i
-          className={`fa-solid ${isOpen ? "fa-xmark" : "fa-comment-dots"} text-white text-xl`}
-        />
-      </button>
+      <div className="fixed bottom-6 right-6 z-50 flex items-end gap-2">
+        <div
+          className={`transition-all duration-300 ${
+            showTooltip && !isOpen
+              ? "opacity-100 translate-y-0"
+              : "opacity-0 translate-y-2 pointer-events-none"
+          }`}
+        >
+          <div
+            className="relative rounded-2xl rounded-br-none px-4 py-2 text-sm font-medium shadow-lg whitespace-nowrap"
+            style={{
+              backgroundColor: "var(--color-primary)",
+              color: "white",
+            }}
+          >
+            ¿Tienes dudas sobre Carlos? 👋
+            <span
+              className="absolute -bottom-2 right-3 w-0 h-0"
+              style={{
+                borderLeft: "8px solid transparent",
+                borderRight: "0px solid transparent",
+                borderTop: `8px solid var(--color-primary)`,
+              }}
+            />
+          </div>
+        </div>
+
+        <button
+          onClick={() => { setIsOpen((prev) => !prev); setShowTooltip(false); }}
+          aria-label={isOpen ? "Cerrar chat" : "Abrir chat"}
+          className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-200 hover:scale-110 cursor-pointer shrink-0"
+          style={{ backgroundColor: "var(--color-primary)" }}
+        >
+          <i
+            className={`fa-solid ${isOpen ? "fa-xmark" : "fa-comment-dots"} text-white text-xl`}
+          />
+        </button>
+      </div>
 
       <div
         className={`fixed bottom-24 right-6 z-50 w-80 sm:w-96 rounded-2xl shadow-xl flex flex-col overflow-hidden transition-all duration-300 origin-bottom-right ${
