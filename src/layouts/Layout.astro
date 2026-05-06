@@ -1,5 +1,6 @@
 ---
 import NavBar from "../components/NavBar.astro";
+import ChatBubble from "../components/ChatBubble.tsx";
 import "../styles/global.css";
 import SEO from "../components/SEO.astro";
 ---
@@ -30,6 +31,7 @@ import SEO from "../components/SEO.astro";
             <NavBar />
         </header>
         <slot />
+        <ChatBubble client:load />
     </body>
 </html>
 
