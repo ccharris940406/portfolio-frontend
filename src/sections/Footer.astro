@@ -1,5 +1,10 @@
 <footer
     class="w-full py-6 px-4 flex flex-col sm:flex-row justify-center items-center text-sm text-[var(--color-text)] mt-10 border-t"
 >
-    <p>© 2025 ccharris.dev — All rights reserved.</p>
+    <p>© <span id="footer-year"></span> ccharris.dev — All rights reserved.</p>
 </footer>
+
+<script>
+    const span = document.getElementById("footer-year") as HTMLSpanElement;
+    span.textContent = new Date().getFullYear().toString();
+</script>
