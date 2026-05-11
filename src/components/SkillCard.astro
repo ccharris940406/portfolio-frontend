@@ -9,7 +9,7 @@ const { name, color, svgPath } = Astro.props as SkillCardProps;
 ---
 
 <div
-    class="skill-card flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-300 hover:scale-110 cursor-default"
+    class="skill-card w-20 flex flex-col items-center gap-2 p-3 rounded-xl transition-all duration-300 hover:scale-110 cursor-default"
     style={`background-color: var(--color-cards); border: 1px solid ${color}33; --skill-color: ${color};`}
 >
     <div
