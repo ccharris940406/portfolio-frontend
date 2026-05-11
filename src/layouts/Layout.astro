@@ -3,6 +3,7 @@ import NavBar from "../components/NavBar.astro";
 import ChatBubble from "../components/ChatBubble.tsx";
 import "../styles/global.css";
 import SEO from "../components/SEO.astro";
+import Analytics from "@vercel/analytics/astro";
 ---
 
 <html lang="es">
@@ -16,10 +17,11 @@ import SEO from "../components/SEO.astro";
             jsonLd={{
                 "@context": "https://schema.org",
                 "@type": "Person",
-                "name": "Carlos César Harris Castillo",
-                "jobTitle": "Full Stack Developer",
-                "description": "Desarrollador Full Stack especializado en Odoo, React Native y Docker",
-                "url": "https://ccharris.vercel.app",
+                name: "Carlos César Harris Castillo",
+                jobTitle: "Full Stack Developer",
+                description:
+                    "Desarrollador Full Stack especializado en Odoo, React Native y Docker",
+                url: "https://ccharris.vercel.app",
             }}
         />
         <meta charset="UTF-8" />
@@ -41,6 +43,7 @@ import SEO from "../components/SEO.astro";
         </header>
         <slot />
         <ChatBubble client:load />
+        <Analytics />
     </body>
 </html>
 
