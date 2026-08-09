@@ -24,3 +24,8 @@ export async function fetchSanityData(
   const data = await response.json();
   return data;
 }
+
+export function sanityImageUrl(url: string, params: string) {
+  if (!url) return url;
+  return `${url}${url.includes("?") ? "&" : "?"}${params}`;
+}

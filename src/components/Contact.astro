@@ -1,5 +1,12 @@
 ---
 import { fetchSanityData } from "../lib/sanity";
+import GitHubIcon from "./icons/GitHubIcon.astro";
+import LinkedInIcon from "./icons/LinkedInIcon.astro";
+import WhatsAppIcon from "./icons/WhatsAppIcon.astro";
+import EmailIcon from "./icons/EmailIcon.astro";
+import PhoneIcon from "./icons/PhoneIcon.astro";
+import LinkIcon from "./icons/LinkIcon.astro";
+import FileArrowDownIcon from "./icons/FileArrowDownIcon.astro";
 
 interface ContactType {
     _id: string;
@@ -17,6 +24,24 @@ const query = `*[_type == "contact"]{
 const contactsRawData = await fetchSanityData(query);
 const contacts: ContactType[] = contactsRawData.result;
 const { cvLink } = Astro.props as { cvLink: string };
+
+const iconMap = {
+    github: GitHubIcon,
+    linkedin: LinkedInIcon,
+    whatsapp: WhatsAppIcon,
+    envelope: EmailIcon,
+    email: EmailIcon,
+    mail: EmailIcon,
+    phone: PhoneIcon,
+} as const;
+
+function resolveIcon(faClass: string) {
+    const normalized = (faClass ?? "").toLowerCase();
+    const key = (Object.keys(iconMap) as (keyof typeof iconMap)[]).find(
+        (candidate) => normalized.includes(candidate),
+    );
+    return key ? iconMap[key] : LinkIcon;
+}
 ---
 
 <section
@@ -24,24 +49,36 @@ const { cvLink } = Astro.props as { cvLink: string };
     class="flex flex-col justify-center items-center space-y-4 mt-2"
 >
     <ul
-        class="flex gap-4 text-5xl sm:text-3xl md:text-5xl justify-center items-center sm:gap-4 text-(--color-primary)"
+        class="flex gap-4 justify-center items-center sm:gap-4 text-(--color-primary)"
     >
         {
-            contacts.map((contact) => (
-                <li id={contact._id} class="hover:text-(--color-secondary)">
-                    <a href={contact.url} target="_blank">
-                        <i class={contact.icon} />
-                    </a>
-                </li>
-            ))
+            contacts.map((contact) => {
+                const Icon = resolveIcon(contact.icon);
+                return (
+                    <li
+                        id={contact._id}
+                        class="hover:text-(--color-secondary)"
+                    >
+                        <a
+                            href={contact.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            aria-label={`${contact.source} de Carlos César Harris Castillo`}
+                        >
+                            <Icon class="w-12 h-12 sm:w-8 sm:h-8 md:w-12 md:h-12" />
+                        </a>
+                    </li>
+                );
+            })
         }
     </ul>
     <a
         href={cvLink}
         target="_blank"
+        rel="noopener noreferrer"
         class="inline-flex hover:bg-(--color-secondary) items-center gap-2 bg-(--color-primary) text-white px-4 py-2 rounded transition"
     >
-        <i class="fa-solid fa-file-arrow-down"></i>
+        <FileArrowDownIcon class="w-5 h-5" />
         Here my CV
     </a>
 </section>

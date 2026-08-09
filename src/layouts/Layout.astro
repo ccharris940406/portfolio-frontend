@@ -4,6 +4,15 @@ import ChatBubble from "../components/ChatBubble.tsx";
 import "../styles/global.css";
 import SEO from "../components/SEO.astro";
 import Analytics from "@vercel/analytics/astro";
+import { fetchSanityData } from "../lib/sanity";
+
+const profileImage = "https://ccharris.vercel.app/banner.jpg";
+
+const contactsQuery = `*[_type == "contact"]{ url }`;
+const contactsRawData = await fetchSanityData(contactsQuery);
+const sameAs = (contactsRawData.result as { url: string }[])
+    .map((contact) => contact.url)
+    .filter((url) => url?.startsWith("http"));
 ---
 
 <html lang="es">
@@ -12,7 +21,7 @@ import Analytics from "@vercel/analytics/astro";
             title="Carlos César Harris Castillo — Full Stack Developer"
             description="Desarrollador Full Stack en Tapachula, México. Especializado en Odoo, React Native y Docker. Experiencia en desarrollo web, mobile y ERP."
             author="Carlos César Harris Castillo"
-            image="https://ccharris.vercel.app/banner.jpg"
+            image={profileImage}
             url="https://ccharris.vercel.app"
             jsonLd={{
                 "@context": "https://schema.org",
@@ -22,6 +31,8 @@ import Analytics from "@vercel/analytics/astro";
                 description:
                     "Desarrollador Full Stack en Tapachula, México. Especializado en Odoo, React Native y Docker",
                 url: "https://ccharris.vercel.app",
+                image: profileImage,
+                sameAs,
                 address: {
                     "@type": "PostalAddress",
                     addressLocality: "Tapachula",
@@ -32,15 +43,7 @@ import Analytics from "@vercel/analytics/astro";
         />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
-        <link rel="icon" type="image/svg+xml" href="/favicon.png" />
-        <link rel="icon" href="/favicon.ico" type="image/x-icon" />
-        <link
-            rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css"
-            integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg=="
-            crossorigin="anonymous"
-            referrerpolicy="no-referrer"
-        />
+        <link rel="icon" href="/favicon.png" type="image/png" />
         <meta name="generator" content={Astro.generator} />
     </head>
     <body>
@@ -48,7 +51,7 @@ import Analytics from "@vercel/analytics/astro";
             <NavBar />
         </header>
         <slot />
-        <ChatBubble client:load />
+        <ChatBubble client:idle />
         <Analytics />
     </body>
 </html>

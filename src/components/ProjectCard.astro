@@ -1,4 +1,6 @@
 ---
+import { sanityImageUrl } from "../lib/sanity";
+
 interface ProjectCardProps {
     title: string;
     description: string;
@@ -10,6 +12,12 @@ interface ProjectCardProps {
 
 const { title, description, imageUrl, techs, repository } =
     Astro.props as ProjectCardProps;
+
+const thumbnailUrl = sanityImageUrl(
+    imageUrl,
+    "w=480&h=288&fit=crop&auto=format",
+);
+const modalImageUrl = sanityImageUrl(imageUrl, "w=1200&auto=format");
 ---
 
 <article
@@ -19,14 +27,17 @@ const { title, description, imageUrl, techs, repository } =
     data-description={description}
     data-techs={JSON.stringify(techs)}
     data-repository={repository}
-    data-image={imageUrl}
+    data-image={modalImageUrl}
     role="button"
     tabindex="0"
 >
     <div class="relative overflow-hidden">
         <img
-            src={imageUrl}
+            src={thumbnailUrl}
             alt={title}
+            width="480"
+            height="288"
+            loading="lazy"
             class="w-full h-36 object-cover transition-transform duration-300 group-hover:scale-105"
         />
         <div

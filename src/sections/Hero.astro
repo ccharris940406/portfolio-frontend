@@ -1,6 +1,6 @@
 ---
 import ThemeToggle from "../components/ThemeToggle.astro";
-import { fetchSanityData } from "../lib/sanity";
+import { fetchSanityData, sanityImageUrl } from "../lib/sanity";
 import { toHTML } from "@portabletext/to-html";
 import Contact from "../components/Contact.astro";
 import type { ProfileInfo, SkillMorphInfo } from "../types/schemes.type";
@@ -20,6 +20,13 @@ const profileRawData = await fetchSanityData(query);
 const { avatarDark, avatarLight, title, about, CV } =
     profileRawData.result as ProfileInfo;
 const titleHtml = toHTML(title);
+
+const avatarTransform = "w=400&h=400&fit=crop&auto=format";
+const avatarDarkOptimized = sanityImageUrl(avatarDark ?? "", avatarTransform);
+const avatarLightOptimized = sanityImageUrl(
+    avatarLight ?? "",
+    avatarTransform,
+);
 
 const skillsQuery = `
   *[_type == "skill"]{
@@ -42,15 +49,26 @@ const skillsSvgPath = skillsRawData.result as SkillMorphInfo[];
             <div class="flex flex-col sm:flex-row gap-4 items-center">
                 <img
                     id="profile-image"
-                    src={avatarDark}
+                    src={avatarDarkOptimized}
                     alt="Profile's image"
-                    class="h-40 md:h-50 rounded-full"
-                    data-avatar-light={avatarLight}
-                    data-avatar-dark={avatarDark}
+                    width="400"
+                    height="400"
+                    loading="eager"
+                    class="w-40 h-40 md:w-50 md:h-50 rounded-full object-cover"
+                    data-avatar-light={avatarLightOptimized}
+                    data-avatar-dark={avatarDarkOptimized}
                 />
-                <img id="logo" src="/logo.svg" alt="" class="w-30 sm:w-40" />
+                <img
+                    id="logo"
+                    src="/logo.svg"
+                    alt=""
+                    width="160"
+                    height="57"
+                    loading="eager"
+                    class="w-30 sm:w-40"
+                />
             </div>
-            <div
+            <h1
                 class="text-lg sm:text-2xl md:text-4xl mt-4 leading-snug"
                 set:html={titleHtml}
             />
@@ -81,7 +99,7 @@ const skillsSvgPath = skillsRawData.result as SkillMorphInfo[];
         <div class="box col-start-1 sm:col-start-3 sm:row-start-3 h-auto">
             <div class="box-header">Skills</div>
             <div class="felx justify-center items-center w-full h-[25vh]">
-                <Morphify skills={skillsSvgPath} client:load />
+                <Morphify skills={skillsSvgPath} client:visible />
             </div>
             <div class="flex justify-center items-center">
                 <a

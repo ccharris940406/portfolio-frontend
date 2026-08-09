@@ -1,6 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import { PUBLIC_AI_API_URL } from "astro:env/client";
+import XMarkIcon from "./icons/XMarkIcon";
+import MessageCircleIcon from "./icons/MessageCircleIcon";
+import BotIcon from "./icons/BotIcon";
+import SendIcon from "./icons/SendIcon";
 
 interface Message {
   role: "user" | "assistant";
@@ -97,9 +101,11 @@ export default function ChatBubble() {
           className="w-14 h-14 rounded-full flex items-center justify-center shadow-lg transition-transform duration-200 hover:scale-110 cursor-pointer shrink-0"
           style={{ backgroundColor: "var(--color-primary)" }}
         >
-          <i
-            className={`fa-solid ${isOpen ? "fa-xmark" : "fa-comment-dots"} text-white text-xl`}
-          />
+          {isOpen ? (
+            <XMarkIcon className="text-white w-5 h-5" />
+          ) : (
+            <MessageCircleIcon className="text-white w-5 h-5" />
+          )}
         </button>
       </div>
 
@@ -120,7 +126,7 @@ export default function ChatBubble() {
           style={{ backgroundColor: "var(--color-primary)" }}
         >
           <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
-            <i className="fa-solid fa-robot text-white text-sm" />
+            <BotIcon className="text-white w-4 h-4" />
           </div>
           <div>
             <p className="text-white font-semibold text-sm">Carlos AI</p>
@@ -235,10 +241,11 @@ export default function ChatBubble() {
           <button
             onClick={sendMessage}
             disabled={loading || !input.trim()}
+            aria-label="Enviar mensaje"
             className="w-9 h-9 rounded-xl flex items-center justify-center transition-opacity disabled:opacity-40 cursor-pointer disabled:cursor-not-allowed shrink-0"
             style={{ backgroundColor: "var(--color-primary)" }}
           >
-            <i className="fa-solid fa-paper-plane text-white text-sm" />
+            <SendIcon className="text-white w-4 h-4" />
           </button>
         </div>
       </div>
