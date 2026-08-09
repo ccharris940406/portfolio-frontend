@@ -5,21 +5,41 @@ import "../styles/global.css";
 import SEO from "../components/SEO.astro";
 import Analytics from "@vercel/analytics/astro";
 import { fetchSanityData } from "../lib/sanity";
-
 const profileImage = "https://ccharris.vercel.app/banner.jpg";
-
 const contactsQuery = `*[_type == "contact"]{ url }`;
 const contactsRawData = await fetchSanityData(contactsQuery);
 const sameAs = (contactsRawData.result as { url: string }[])
     .map((contact) => contact.url)
     .filter((url) => url?.startsWith("http"));
+
+const localBusinessJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "ProfessionalService",
+    name: "Carlos César Harris Castillo — Desarrollo de Software",
+    image: profileImage,
+    url: "https://ccharris.vercel.app",
+    description:
+        "Desarrollador de software full stack en Mérida, especializado en aplicaciones web, móviles y sistemas de IA con LangChain y LangGraph.",
+    address: {
+        "@type": "PostalAddress",
+        addressLocality: "Mérida",
+        addressRegion: "Yucatán",
+        addressCountry: "MX",
+    },
+    areaServed: {
+        "@type": "City",
+        name: "Mérida",
+    },
+    priceRange: "$$",
+    sameAs,
+};
 ---
 
 <html lang="es">
     <head>
         <SEO
             title="Carlos César Harris Castillo — Full Stack Developer"
-            description="Desarrollador Full Stack en Tapachula, México. Especializado en Odoo, React Native y Docker. Experiencia en desarrollo web, mobile y ERP."
+            description="Desarrollador Full Stack en Mérida, México. Especializado en Odoo, React Native y Docker. Experiencia en desarrollo web, mobile y ERP."
             author="Carlos César Harris Castillo"
             image={profileImage}
             url="https://ccharris.vercel.app"
@@ -29,17 +49,21 @@ const sameAs = (contactsRawData.result as { url: string }[])
                 name: "Carlos César Harris Castillo",
                 jobTitle: "Full Stack Developer",
                 description:
-                    "Desarrollador Full Stack en Tapachula, México. Especializado en Odoo, React Native y Docker",
+                    "Desarrollador Full Stack en Mérida, México. Especializado en Odoo, React Native y Docker",
                 url: "https://ccharris.vercel.app",
                 image: profileImage,
                 sameAs,
                 address: {
                     "@type": "PostalAddress",
-                    addressLocality: "Tapachula",
-                    addressRegion: "Chiapas",
+                    addressLocality: "Mérida",
+                    addressRegion: "Yucatán",
                     addressCountry: "MX",
                 },
             }}
+        />
+        <script
+            type="application/ld+json"
+            set:html={JSON.stringify(localBusinessJsonLd)}
         />
         <meta charset="UTF-8" />
         <meta name="viewport" content="width=device-width" />
@@ -55,7 +79,6 @@ const sameAs = (contactsRawData.result as { url: string }[])
         <Analytics />
     </body>
 </html>
-
 <style>
     html,
     body {
